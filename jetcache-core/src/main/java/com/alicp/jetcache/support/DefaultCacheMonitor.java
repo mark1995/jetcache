@@ -167,6 +167,13 @@ public class DefaultCacheMonitor implements CacheMonitor {
         }
     }
 
+    /**
+     * 回源事件统计
+     * @param millis
+     * @param key
+     * @param loadedValue
+     * @param success
+     */
     private void afterLoad(long millis, Object key, Object loadedValue, boolean success) {
         cacheStat.minLoadTime = Math.min(cacheStat.minLoadTime, millis);
         cacheStat.maxLoadTime = Math.max(cacheStat.maxLoadTime, millis);

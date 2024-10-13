@@ -34,6 +34,7 @@ public class MetricsMonitorInstaller extends AbstractLifecycle implements CacheM
     @Override
     protected void doInit() {
         if (metricsCallback != null && interval != null) {
+            // 启动metric管理器
             metricsManager = new DefaultMetricsManager((int) interval.toMinutes(),
                     TimeUnit.MINUTES, metricsCallback);
             metricsManager.start();
@@ -57,6 +58,7 @@ public class MetricsMonitorInstaller extends AbstractLifecycle implements CacheM
         cache = CacheUtil.getAbstractCache(cache);
         if (cache instanceof MultiLevelCache) {
             MultiLevelCache mc = (MultiLevelCache) cache;
+            //本地远程的缓存统计器
             if (mc.caches().length == 2) {
                 Cache local = mc.caches()[0];
                 Cache remote = mc.caches()[1];

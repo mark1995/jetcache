@@ -14,6 +14,7 @@ import java.util.function.Function;
  *
  * @author huangli
  */
+// 缓存代理加载器
 public class CacheUtil {
 
     private interface ProxyLoader<K, V> extends CacheLoader<K, V> {
@@ -91,6 +92,13 @@ public class CacheUtil {
     }
 
 
+    /**
+     * 获取真实的cache对象
+     * @param c
+     * @return
+     * @param <K>
+     * @param <V>
+     */
     public static <K, V> AbstractCache<K, V> getAbstractCache(Cache<K, V> c) {
         while (c instanceof ProxyCache) {
             c = ((ProxyCache) c).getTargetCache();

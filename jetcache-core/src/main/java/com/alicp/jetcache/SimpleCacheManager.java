@@ -21,6 +21,10 @@ import java.util.function.Supplier;
 /**
  * @author huangli
  */
+
+/**
+ * 简单的缓存管理器
+ */
 public class SimpleCacheManager implements CacheManager, AutoCloseable {
 
     private static final boolean DEFAULT_CACHE_NULL_VALUE = false;

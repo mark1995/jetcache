@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author huangli
+ * 这里才是真正的解析注解的地方，注解 -> Config
  */
 public class CacheConfigUtil {
     private static CachedAnnoConfig parseCached(Method m) {

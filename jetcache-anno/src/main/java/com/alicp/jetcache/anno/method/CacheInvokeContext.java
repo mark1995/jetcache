@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 /**
  * @author huangli
+ * 缓存执行运行上下文
  */
 public class CacheInvokeContext {
     private Invoker invoker;

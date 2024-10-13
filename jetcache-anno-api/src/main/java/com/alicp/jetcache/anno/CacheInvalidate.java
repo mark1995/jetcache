@@ -7,6 +7,8 @@ import java.lang.annotation.*;
 
 /**
  * @author huangli
+ *
+ * 使用场景，在修改操作的时候，让缓存失效
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

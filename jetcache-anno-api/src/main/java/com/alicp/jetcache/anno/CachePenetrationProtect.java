@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author huangli
+ * 防止缓存穿透，即针对不存在的缓存键进行大量查询，导致系统性能下降。
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

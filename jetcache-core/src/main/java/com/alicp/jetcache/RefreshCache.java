@@ -116,6 +116,7 @@ public class RefreshCache<K, V> extends LoadingCache<K, V> {
         long refreshMillis = refreshPolicy.getRefreshMillis();
         if (refreshMillis > 0) {
             Object taskId = getTaskId(key);
+            // 加入到刷新任务容器中
             RefreshTask refreshTask = taskMap.computeIfAbsent(taskId, tid -> {
                 logger.debug("add refresh task. interval={},  key={}", refreshMillis , key);
                 RefreshTask task = new RefreshTask(taskId, key, loader);
@@ -234,6 +235,9 @@ public class RefreshCache<K, V> extends LoadingCache<K, V> {
             }
         }
 
+        /**
+         * 刷新缓存的执行过程
+         */
         @Override
         public void run() {
             try {
@@ -244,6 +248,7 @@ public class RefreshCache<K, V> extends LoadingCache<K, V> {
                 long now = System.currentTimeMillis();
                 long stopRefreshAfterLastAccessMillis = config.getRefreshPolicy().getStopRefreshAfterLastAccessMillis();
                 if (stopRefreshAfterLastAccessMillis > 0) {
+                    // 如果上次访问的过期类，直接取消
                     if (lastAccessTime + stopRefreshAfterLastAccessMillis < now) {
                         logger.debug("cancel refresh: {}", key);
                         cancel();

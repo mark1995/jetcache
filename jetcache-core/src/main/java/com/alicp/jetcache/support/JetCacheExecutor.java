@@ -13,6 +13,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author huangli
  */
 public class JetCacheExecutor {
+
+    // 优先级线程池，默认调度线程池，高io线程池
     protected volatile static ScheduledExecutorService defaultExecutor;
     protected volatile static ScheduledExecutorService heavyIOExecutor;
     private static final ReentrantLock reentrantLock = new ReentrantLock();

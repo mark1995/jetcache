@@ -12,6 +12,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author huangli
  */
 public class ConfigMap {
+    /**
+     * 缓存对应的缓存配置
+     */
     private ConcurrentHashMap<String, CacheInvokeConfig> methodInfoMap = new ConcurrentHashMap<>();
     private ConcurrentHashMap<String, CachedAnnoConfig> cacheNameMap = new ConcurrentHashMap<>();
 

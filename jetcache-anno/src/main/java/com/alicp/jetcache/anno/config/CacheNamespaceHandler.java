@@ -8,6 +8,10 @@ import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 /**
  * @author huangli
  */
+
+/**
+ * xml解析
+ */
 public class CacheNamespaceHandler extends NamespaceHandlerSupport {
 
     @Override

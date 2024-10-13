@@ -23,16 +23,21 @@ import java.util.function.Function;
  *
  * @author huangli
  */
+// 支撑域相关
 public class ConfigProvider extends AbstractLifecycle {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigProvider.class);
-
+    // 全局配置
     protected GlobalCacheConfig globalCacheConfig;
 
+    // 编码解析器
     protected EncoderParser encoderParser;
+    // key转换器 解析器
     protected KeyConvertorParser keyConvertorParser;
+    // 统计相关的回调
     private Consumer<StatInfo> metricsCallback;
 
+    // 各个级别，类型的缓存构造器，local,remote(redis, memcache)
     private CacheBuilderTemplate cacheBuilderTemplate;
 
     public ConfigProvider() {
@@ -43,6 +48,7 @@ public class ConfigProvider extends AbstractLifecycle {
 
     @Override
     protected void doInit() {
+        // 初始化，是否启动缓存穿透，远程，本地缓存构建器
         cacheBuilderTemplate = new CacheBuilderTemplate(globalCacheConfig.isPenetrationProtect(),
                 globalCacheConfig.getLocalCacheBuilders(), globalCacheConfig.getRemoteCacheBuilders());
         for (CacheBuilder builder : globalCacheConfig.getLocalCacheBuilders().values()) {
@@ -71,6 +77,7 @@ public class ConfigProvider extends AbstractLifecycle {
     }
 
     protected void initCacheMonitorInstallers() {
+        // 初始化统计，通知相关的监听器
         cacheBuilderTemplate.getCacheMonitorInstallers().add(metricsMonitorInstaller());
         cacheBuilderTemplate.getCacheMonitorInstallers().add(notifyMonitorInstaller());
         for (CacheMonitorInstaller i : cacheBuilderTemplate.getCacheMonitorInstallers()) {

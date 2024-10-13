@@ -78,6 +78,11 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         }
     }
 
+    /**
+     * 获取key对应的结果
+     * @param key the key
+     * @return
+     */
     @Override
     public final CacheGetResult<V> GET(K key) {
         long t = System.currentTimeMillis();
@@ -137,16 +142,31 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         return true;
     }
 
+
+    /**
+     * 写入缓存操作
+     * @param key
+     * @param loader
+     * @param cacheNullWhenLoaderReturnNull
+     * @param expireAfterWrite
+     * @param timeUnit
+     * @param cache
+     * @return
+     * @param <K>
+     * @param <V>
+     */
     static <K, V> V computeIfAbsentImpl(K key, Function<K, V> loader, boolean cacheNullWhenLoaderReturnNull,
                                                long expireAfterWrite, TimeUnit timeUnit, Cache<K, V> cache) {
         AbstractCache<K, V> abstractCache = CacheUtil.getAbstractCache(cache);
         CacheLoader<K, V> newLoader = CacheUtil.createProxyLoader(cache, loader, abstractCache::notify);
         CacheGetResult<V> r;
         if (cache instanceof RefreshCache) {
+            // 如果刷新缓存
             RefreshCache<K, V> refreshCache = ((RefreshCache<K, V>) cache);
             r = refreshCache.GET(key);
             refreshCache.addOrUpdateRefreshTask(key, newLoader);
         } else {
+            // 异步结果future
             r = cache.GET(key);
         }
         if (r.isSuccess()) {
@@ -163,6 +183,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
             };
 
             V loadedValue;
+            // 如果防止缓存穿透，则使用同步加载
             if (cache.config().isCachePenetrationProtect()) {
                 loadedValue = synchronizedLoad(cache.config(), abstractCache, key, newLoader, cacheUpdater);
             } else {
@@ -259,6 +280,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
         } else {
             result = do_PUT(key, value, expireAfterWrite, timeUnit);
         }
+        // 缓存写入事件
         result.future().thenRun(() -> {
             CachePutEvent event = new CachePutEvent(this, System.currentTimeMillis() - t, key, value, result);
             notify(event);

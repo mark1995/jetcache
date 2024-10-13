@@ -31,6 +31,11 @@ public class CachePointcut extends StaticMethodMatcherPointcut implements ClassF
         this.basePackages = basePackages;
     }
 
+    /**
+     * 判定类是否在指定的包范围内
+     * @param clazz the candidate target class
+     * @return
+     */
     @Override
     public boolean matches(Class clazz) {
         boolean b = matchesImpl(clazz);
@@ -115,6 +120,12 @@ public class CachePointcut extends StaticMethodMatcherPointcut implements ClassF
         return b;
     }
 
+    /**
+     * 方法和类是否匹配缓存配置
+     * @param method
+     * @param targetClass
+     * @return
+     */
     private boolean matchesImpl(Method method, Class targetClass) {
         if (!matchesThis(method.getDeclaringClass())) {
             return false;
@@ -124,12 +135,14 @@ public class CachePointcut extends StaticMethodMatcherPointcut implements ClassF
         }
         String key = getKey(method, targetClass);
         CacheInvokeConfig cac = cacheConfigMap.getByMethodInfo(key);
+        // 如果是不缓存配置，直接返回false
         if (cac == CacheInvokeConfig.getNoCacheInvokeConfigInstance()) {
             return false;
         } else if (cac != null) {
             return true;
         } else {
             cac = new CacheInvokeConfig();
+            // 注解的配置解析到caa
             CacheConfigUtil.parse(cac, method);
 
             String name = method.getName();

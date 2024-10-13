@@ -10,14 +10,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author huangli
+ * 用途：配置spring aop切面，使得切点在指定的包下生效
  */
 public class CacheAdvisor extends AbstractBeanFactoryPointcutAdvisor {
 
     public static final String CACHE_ADVISOR_BEAN_NAME = "jetcache2.internalCacheAdvisor";
 
+    // 注入一个缓存配置 bean
     @Autowired
     private ConfigMap cacheConfigMap;
 
+    // 扫描的包范围
     private String[] basePackages;
 
     @Override

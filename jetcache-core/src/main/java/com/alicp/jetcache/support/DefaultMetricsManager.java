@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 public class DefaultMetricsManager {
     private static final Logger logger = LoggerFactory.getLogger(DefaultMetricsManager.class);
 
+    // 需要统计缓存元素
     protected final CopyOnWriteArrayList<DefaultCacheMonitor> monitorList = new CopyOnWriteArrayList();
 
     private ScheduledFuture<?> future;
@@ -47,6 +48,9 @@ public class DefaultMetricsManager {
         this.metricsCallback = new StatInfoLogger(verboseLog);
     }
 
+    /**
+     * 执行metric任务
+     */
     final Runnable cmd = new Runnable() {
         private long time = System.currentTimeMillis();
 
@@ -54,7 +58,9 @@ public class DefaultMetricsManager {
         public void run() {
             try {
                 List<CacheStat> stats = monitorList.stream().map((m) -> {
+                    // 当前周期的统计数据
                     CacheStat stat = m.getCacheStat();
+                    // 重制统计
                     m.resetStat();
                     return stat;
                 }).collect(Collectors.toList());
@@ -65,7 +71,7 @@ public class DefaultMetricsManager {
                 statInfo.setEndTime(endTime);
                 statInfo.setStats(stats);
                 time = endTime;
-
+                // 回调各个需要的统计
                 metricsCallback.accept(statInfo);
             } catch (Exception e) {
                 logger.error("jetcache DefaultMetricsManager error", e);
@@ -81,6 +87,7 @@ public class DefaultMetricsManager {
                 return;
             }
             long delay = firstDelay(resetTime, resetTimeUnit);
+            // 统计相关的线程池
             future = JetCacheExecutor.defaultExecutor().scheduleAtFixedRate(
                     cmd, delay, resetTimeUnit.toMillis(resetTime), TimeUnit.MILLISECONDS);
             logger.info("cache stat period at " + resetTime + " " + resetTimeUnit);
@@ -100,6 +107,7 @@ public class DefaultMetricsManager {
         }
     }
 
+    // 可以实时添加
     public void add(DefaultCacheMonitor... monitors) {
         monitorList.addAll(Arrays.asList(monitors));
     }

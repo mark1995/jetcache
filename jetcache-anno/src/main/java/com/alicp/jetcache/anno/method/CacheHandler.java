@@ -87,6 +87,12 @@ public class CacheHandler implements InvocationHandler {
         }
     }
 
+    /**
+     * aop执行缓存方法的低粉
+     * @param context
+     * @return
+     * @throws Throwable
+     */
     public static Object invoke(CacheInvokeContext context) throws Throwable {
         if (context.getCacheInvokeConfig().isEnableCacheContext()) {
             try {
@@ -104,10 +110,13 @@ public class CacheHandler implements InvocationHandler {
         CacheInvokeConfig cic = context.getCacheInvokeConfig();
         CachedAnnoConfig cachedConfig = cic.getCachedAnnoConfig();
         if (cachedConfig != null && (cachedConfig.isEnabled() || CacheContextSupport._isEnabled())) {
+            // 执行缓存
             return invokeWithCached(context);
         } else if (cic.getInvalidateAnnoConfigs() != null || cic.getUpdateAnnoConfig() != null) {
+            // 缓存失效或者更新
             return invokeWithInvalidateOrUpdate(context);
         } else {
+            // 直接执行原
             return invokeOrigin(context);
         }
     }
@@ -238,16 +247,19 @@ public class CacheHandler implements InvocationHandler {
             return invokeOrigin(context);
         }
 
+        // spel表达式
         Object key = ExpressionUtil.evalKey(context, cic.getCachedAnnoConfig());
         if (key == null) {
             return loadAndCount(context, cache, key);
         }
 
+        // spel表达式
         if (!ExpressionUtil.evalCondition(context, cic.getCachedAnnoConfig())) {
             return loadAndCount(context, cache, key);
         }
 
         try {
+            // 执行原
             CacheLoader loader = new CacheLoader() {
                 @Override
                 public Object load(Object k) throws Throwable {
@@ -273,10 +285,12 @@ public class CacheHandler implements InvocationHandler {
         Object v = null;
         boolean success = false;
         try {
+            // 回源操作
             v = invokeOrigin(context);
             success = true;
         } finally {
             t = System.currentTimeMillis() - t;
+            // 回源事件
             CacheLoadEvent event = new CacheLoadEvent(cache, t, key, v, success);
             while (cache instanceof ProxyCache) {
                 cache = ((ProxyCache) cache).getTargetCache();

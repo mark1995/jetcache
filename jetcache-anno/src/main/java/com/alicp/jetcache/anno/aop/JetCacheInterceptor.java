@@ -23,6 +23,8 @@ import java.lang.reflect.Method;
 
 /**
  * @author huangli
+ *
+ * 拦截带有缓存相关注解的方法调用，
  */
 public class JetCacheInterceptor implements MethodInterceptor, ApplicationContextAware {
 
@@ -43,15 +45,18 @@ public class JetCacheInterceptor implements MethodInterceptor, ApplicationContex
     @Override
     public Object invoke(final MethodInvocation invocation) throws Throwable {
         if (configProvider == null) {
+            // 支撑域
             configProvider = applicationContext.getBean(ConfigProvider.class);
         }
         if (configProvider != null && globalCacheConfig == null) {
             globalCacheConfig = configProvider.getGlobalCacheConfig();
         }
+        // 没有配置，没有开启方法缓存，直接执行目的方法
         if (globalCacheConfig == null || !globalCacheConfig.isEnableMethodCache()) {
             return invocation.proceed();
         }
         if (cacheManager == null) {
+            // 如果没有缓存处理器，也直接执行目的方法
             cacheManager = applicationContext.getBean(CacheManager.class);
             if (cacheManager == null) {
                 logger.error("There is no cache manager instance in spring context");
@@ -63,6 +68,7 @@ public class JetCacheInterceptor implements MethodInterceptor, ApplicationContex
         Object obj = invocation.getThis();
         CacheInvokeConfig cac = null;
         if (obj != null) {
+            // 方法描述名，com.xxx.method(I)_com.xxx
             String key = CachePointcut.getKey(method, obj.getClass());
             cac  = cacheConfigMap.getByMethodInfo(key);
         }
@@ -76,7 +82,7 @@ public class JetCacheInterceptor implements MethodInterceptor, ApplicationContex
                     invocation.getThis() == null ? null : invocation.getThis().getClass().getName());
         }
         */
-
+        // 如果缓存管理配置中，没有获得cac，也是直接执行目的方法
         if (cac == null || cac == CacheInvokeConfig.getNoCacheInvokeConfigInstance()) {
             return invocation.proceed();
         }

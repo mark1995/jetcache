@@ -39,6 +39,11 @@ public class JetCacheProxyConfiguration implements ImportAware, ApplicationConte
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * 导入缓存切面
+     * @param jetCacheInterceptor
+     * @return
+     */
     @Bean(name = CacheAdvisor.CACHE_ADVISOR_BEAN_NAME)
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public CacheAdvisor jetcacheAdvisor(JetCacheInterceptor jetCacheInterceptor) {
@@ -49,6 +54,10 @@ public class JetCacheProxyConfiguration implements ImportAware, ApplicationConte
         return advisor;
     }
 
+    /**
+     * 切面拦截器
+     * @return
+     */
     @Bean
     @Role(BeanDefinition.ROLE_INFRASTRUCTURE)
     public JetCacheInterceptor jetCacheInterceptor() {

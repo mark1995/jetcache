@@ -47,6 +47,13 @@ public class CacheContext {
         return c;
     }
 
+    /**
+     * 根据配置，上下文信息获取缓存实例
+     * @param invokeContext
+     * @param cacheAnnoConfig
+     * @param configMap
+     * @return
+     */
     private Cache createOrGetCache(CacheInvokeContext invokeContext, CacheAnnoConfig cacheAnnoConfig, ConfigMap configMap) {
         Cache cache = cacheAnnoConfig.getCache();
         if (cache != null) {

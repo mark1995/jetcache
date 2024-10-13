@@ -11,10 +11,14 @@ import java.util.List;
 
 /**
  * @author huangli
+ *
+ * 这个是方法上的注解配置，包括了 Cached, CacheInvalidate, CacheUpdate 等配置
  */
 public class CacheInvokeConfig {
+    // 缓存注解的配置，对应的cached 注解
     private CachedAnnoConfig cachedAnnoConfig;
     private List<CacheInvalidateAnnoConfig> invalidateAnnoConfigs;
+    // 缓存更新注解的配置，对应的cacheUpdate 注解
     private CacheUpdateAnnoConfig updateAnnoConfig;
     private boolean enableCacheContext;
 

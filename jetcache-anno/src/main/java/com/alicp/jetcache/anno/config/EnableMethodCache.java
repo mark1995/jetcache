@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 
 /**
  * Created on 2016/11/16.
+ * 导入配置
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
