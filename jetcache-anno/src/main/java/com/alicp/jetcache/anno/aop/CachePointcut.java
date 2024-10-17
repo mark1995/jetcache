@@ -18,6 +18,11 @@ import java.lang.reflect.Modifier;
 
 /**
  * @author huangli
+ * spring aop的三种方式
+ * 1. xml配置
+ * 2.aspectj注解
+ * 3. api方式
+ * jetCache就是api方式
  */
 public class CachePointcut extends StaticMethodMatcherPointcut implements ClassFilter {
 

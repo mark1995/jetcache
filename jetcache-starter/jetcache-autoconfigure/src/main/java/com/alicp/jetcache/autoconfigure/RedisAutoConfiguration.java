@@ -34,6 +34,13 @@ import java.util.stream.Collectors;
  * Created on 2016/11/25.
  *
  * @author huangli
+ * 如何条件注入 redis
+ *
+ * SpringBootCondition
+ *
+ * JetCacheCondition 类通过实现 SpringBootCondition 接口，
+ * 可以根据配置文件中的缓存类型来决定是否注册相关的 Bean。
+ * 这种机制使得 Spring Boot 应用能够更加灵活地根据配置来控制组件的加载。
  */
 @Configuration
 @Conditional(RedisAutoConfiguration.RedisCondition.class)

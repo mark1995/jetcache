@@ -23,6 +23,8 @@ import java.util.function.Consumer;
  * Created on 2016/11/17.
  *
  * @author huangli
+ *
+ * jetcache是如何通过配置注入不同的缓存实现呢?
  */
 @Configuration
 @ConditionalOnClass(GlobalCacheConfig.class)
